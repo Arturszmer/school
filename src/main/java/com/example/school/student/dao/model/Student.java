@@ -3,6 +3,7 @@ package com.example.school.student.dao.model;
 import com.example.school.teacher.dao.model.Teacher;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class Student {
     private String email;
     private String fieldOfStudy;
     @ManyToMany
-    private List<Teacher> teachers;
+    private List<Teacher> teachers = new ArrayList<>();
 
     public Student() {
     }
