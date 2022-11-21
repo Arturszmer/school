@@ -1,10 +1,9 @@
 package com.example.school.teacher.service;
 
-import com.example.school.myExceptions.AgeValidException;
-import com.example.school.myExceptions.NameValidException;
 import com.example.school.teacher.dao.model.TeacherDTO;
 import com.example.school.teacher.mapper.Mapper;
 import com.example.school.teacher.repo.TeacherRepo;
+import com.example.school.validators.TeacherAndStudentValidator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +13,12 @@ public class TeacherService {
 
     private final TeacherRepo teacherRepo;
     private final Mapper mapper;
+    private final TeacherAndStudentValidator teacherAndStudentValidator;
 
-    public TeacherService(TeacherRepo teacherRepo, Mapper mapper) {
+    public TeacherService(TeacherRepo teacherRepo, Mapper mapper, TeacherAndStudentValidator teacherAndStudentValidator) {
         this.teacherRepo = teacherRepo;
         this.mapper = mapper;
+        this.teacherAndStudentValidator = teacherAndStudentValidator;
     }
 
     @Transactional
@@ -27,14 +28,9 @@ public class TeacherService {
 
     private void teacherValidator(@NotNull TeacherDTO teacherDTO) {
 
-        if (teacherDTO.getName().length() < 3){
-            throw new NameValidException();
-        }
-        if (teacherDTO.getAge() <= 18){
-            throw new AgeValidException();
-        }
+        teacherAndStudentValidator.nameLengthValid(teacherDTO.getName());
+        teacherAndStudentValidator.ageValid(teacherDTO.getAge());
+        teacherAndStudentValidator.emailValid(teacherDTO.getEmail());
         teacherRepo.save(mapper.teacherDtoToTeacher(teacherDTO));
-
     }
-
 }

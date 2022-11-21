@@ -1,6 +1,7 @@
 package com.example.school.teacher.service;
 
 import com.example.school.myExceptions.AgeValidException;
+import com.example.school.myExceptions.EmailValidException;
 import com.example.school.myExceptions.NameValidException;
 import com.example.school.teacher.dao.model.Teacher;
 import com.example.school.teacher.dao.model.TeacherDTO;
@@ -32,6 +33,7 @@ class TeacherServiceTest {
         TeacherDTO teacherDTO = getTeacherDTO();
 
         // when
+        System.out.println("email addres: " + teacherDTO.getEmail());
         teacherService.addTeacher(teacherDTO);
         List<Teacher> all = teacherRepo.findAll();
 
@@ -65,11 +67,50 @@ class TeacherServiceTest {
         assertThrows(AgeValidException.class, () -> teacherService.addTeacher(teacherDTO));
     }
 
+    @Test
+    public void shouldThrowAnEmailExceptionWithoutUncorrectDomain() {
+        // given
+        TeacherDTO teacherDTO = new TeacherDTO("Artur",
+                "Brzęczyszczykiewicz",
+                22, "teacher@gmail",
+                "polski",
+                new ArrayList<>());
+
+        // expect
+        assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
+    }
+
+    @Test
+    public void shouldThrowAnEmailExceptionWithoutMonkey() {
+        // given
+        TeacherDTO teacherDTO = new TeacherDTO("Artur",
+                "Brzęczyszczykiewicz",
+                22, "teachergmail.pl",
+                "polski",
+                new ArrayList<>());
+
+        // expect
+        assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
+    }
+
+    @Test
+    public void shouldThrowAnEmailExceptionWithoutBeforeMonkeyPart() {
+        // given
+        TeacherDTO teacherDTO = new TeacherDTO("Artur",
+                "Brzęczyszczykiewicz",
+                22, "@gmail.pl",
+                "polski",
+                new ArrayList<>());
+
+        // expect
+        assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
+    }
+
     @NotNull
     private static TeacherDTO getTeacherDTO() {
         return new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
-                22, "teacher@gmail.com",
+                22, "username@domain.com",
                 "polski",
                 new ArrayList<>());
     }
