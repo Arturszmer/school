@@ -13,12 +13,12 @@ public class TeacherService {
 
     private final TeacherRepo teacherRepo;
     private final Mapper mapper;
-    private final TeacherAndStudentValidator teacherAndStudentValidator;
+    private final TeacherAndStudentValidator validator;
 
-    public TeacherService(TeacherRepo teacherRepo, Mapper mapper, TeacherAndStudentValidator teacherAndStudentValidator) {
+    public TeacherService(TeacherRepo teacherRepo, Mapper mapper, TeacherAndStudentValidator validator) {
         this.teacherRepo = teacherRepo;
         this.mapper = mapper;
-        this.teacherAndStudentValidator = teacherAndStudentValidator;
+        this.validator = validator;
     }
 
     @Transactional
@@ -28,9 +28,9 @@ public class TeacherService {
 
     private void teacherValidator(@NotNull TeacherDTO teacherDTO) {
 
-        teacherAndStudentValidator.nameLengthValid(teacherDTO.getName());
-        teacherAndStudentValidator.ageValid(teacherDTO.getAge());
-        teacherAndStudentValidator.emailValid(teacherDTO.getEmail());
+        validator.nameLengthValid(teacherDTO.getName());
+        validator.ageValid(teacherDTO.getAge());
+        validator.emailValid(teacherDTO.getEmail());
         teacherRepo.save(mapper.teacherDtoToTeacher(teacherDTO));
     }
 }

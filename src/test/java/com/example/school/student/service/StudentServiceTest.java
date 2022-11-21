@@ -1,11 +1,11 @@
-package com.example.school.teacher.service;
+package com.example.school.student.service;
 
 import com.example.school.myExceptions.AgeValidException;
 import com.example.school.myExceptions.EmailValidException;
 import com.example.school.myExceptions.NameValidException;
-import com.example.school.teacher.dao.model.Teacher;
-import com.example.school.teacher.dao.model.TeacherDTO;
-import com.example.school.teacher.repo.TeacherRepo;
+import com.example.school.student.dao.model.Student;
+import com.example.school.student.dao.model.StudentDTO;
+import com.example.school.student.repo.StudentRepo;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,97 +20,98 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class TeacherServiceTest {
+class StudentServiceTest {
 
     @Autowired
-    TeacherRepo teacherRepo;
+    StudentRepo studentRepo;
     @Autowired
-    TeacherService teacherService;
+    StudentService studentService;
 
     @Test
-    public void shouldCreateATeacher(){
+    public void shouldCreateAStudent(){
         // given
-        TeacherDTO teacherDTO = getTeacherDTO();
+        StudentDTO studentDTO = studentDTO();
 
         // when
-        teacherService.addTeacher(teacherDTO);
-        List<Teacher> all = teacherRepo.findAll();
+        studentService.addStudent(studentDTO);
+        List<Student> allStudents = studentRepo.findAll();
 
         // then
-        assertThat(all.size()).isEqualTo(1);
+        assertThat(allStudents.size()).isEqualTo(1);
     }
 
     @Test
     public void shouldThrowANameLengthException() {
         // given
-        TeacherDTO teacherDTO = new TeacherDTO("A",
+        StudentDTO studentDTO = new StudentDTO("A",
                 "Brzęczyszczykiewicz",
                 22, "teacher@gmail.com",
                 "polski",
                 new ArrayList<>());
 
         // expect
-        assertThrows(NameValidException.class, () -> teacherService.addTeacher(teacherDTO));
+        assertThrows(NameValidException.class, () -> studentService.addStudent(studentDTO));
     }
 
     @Test
     public void shouldThrowAnAgeException() {
         // given
-        TeacherDTO teacherDTO = new TeacherDTO("Artur",
+        StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 17, "teacher@gmail.com",
                 "polski",
                 new ArrayList<>());
 
         // expect
-        assertThrows(AgeValidException.class, () -> teacherService.addTeacher(teacherDTO));
+        assertThrows(AgeValidException.class, () -> studentService.addStudent(studentDTO));
     }
 
     @Test
     public void shouldThrowAnEmailExceptionWithoutUncorrectDomain() {
         // given
-        TeacherDTO teacherDTO = new TeacherDTO("Artur",
+        StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 22, "teacher@gmail",
-                "polski",
+                "Przedsiębiorczość i Finanse",
                 new ArrayList<>());
 
         // expect
-        assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
+        assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
     }
 
     @Test
     public void shouldThrowAnEmailExceptionWithoutMonkey() {
         // given
-        TeacherDTO teacherDTO = new TeacherDTO("Artur",
+        StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 22, "teachergmail.pl",
-                "polski",
+                "Przedsiębiorczość i Finanse",
                 new ArrayList<>());
 
         // expect
-        assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
+        assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
     }
 
     @Test
     public void shouldThrowAnEmailExceptionWithoutBeforeMonkeyPart() {
         // given
-        TeacherDTO teacherDTO = new TeacherDTO("Artur",
+        StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 22, "@gmail.pl",
-                "polski",
+                "Przedsiębiorczość i Finanse",
                 new ArrayList<>());
 
         // expect
-        assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
+        assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
     }
 
     @NotNull
-    private static TeacherDTO getTeacherDTO() {
-        return new TeacherDTO("Artur",
+    private static StudentDTO studentDTO() {
+        return new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
-                22, "username@domain.com",
-                "polski",
+                19, "username@domain.com",
+                "Przedsiębiorczość i Finanse",
                 new ArrayList<>());
     }
+
 }
