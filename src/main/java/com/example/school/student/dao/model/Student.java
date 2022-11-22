@@ -18,6 +18,7 @@ public class Student {
     private int age;
     private String email;
     private String fieldOfStudy;
+    private String uuid;
     @ManyToMany
     private List<Teacher> teachers = new ArrayList<>();
 
@@ -62,6 +63,14 @@ public class Student {
 
     public void setFieldOfStudy(String fieldOfStudy) {
         this.fieldOfStudy = fieldOfStudy;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public List<Teacher> getTeachers() {

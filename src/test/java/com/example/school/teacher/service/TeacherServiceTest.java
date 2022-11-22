@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,6 +105,54 @@ class TeacherServiceTest {
         // expect
         assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
     }
+
+    @Test
+    public void shouldDeleteTeacher() {
+        // given
+        TeacherDTO teacherDTO = getTeacherDTO();
+        teacherService.addTeacher(teacherDTO);
+
+        // when
+        teacherService.deleteTeacher(teacherDTO);
+        List<Teacher> allTeachers = teacherRepo.findAll();
+
+        // then
+        assertThat(allTeachers.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldEditTeacherAllData() {
+        // given
+        TeacherDTO teacherDTO = getTeacherDTO();
+        teacherService.addTeacher(teacherDTO);
+
+        // when
+        teacherService.updateTeacher(teacherDTO.getUuid(), new TeacherDTO("Mariusz",
+                "Nowak",
+                28,
+                "autograf@doom.com",
+                "Angelsi",
+                new ArrayList<>()));
+        Optional<Teacher> updatedTeacher = teacherRepo.findByUuid(teacherDTO.getUuid());
+        // then
+        assertThat(updatedTeacher.get().getName()).isEqualTo("Mariusz");
+    }
+
+    @Test
+    public void shouldThrowAgeValidExceptionInEditTeacherData() {
+        // given
+        TeacherDTO teacherDTO = getTeacherDTO();
+        teacherService.addTeacher(teacherDTO);
+
+        // expect
+        assertThrows(AgeValidException.class, () -> teacherService.updateTeacher(teacherDTO.getUuid(), new TeacherDTO("Mariusz",
+                "Nowak",
+                17,
+                "autograf@doom.com",
+                "Angelsi",
+                new ArrayList<>())));
+    }
+
 
     @NotNull
     private static TeacherDTO getTeacherDTO() {
