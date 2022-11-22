@@ -18,6 +18,7 @@ public class Teacher {
     private int age;
     private String email;
     private String subject;
+    private String uuid;
     @ManyToMany
     private List<Student> students = new ArrayList<>();
 
@@ -64,6 +65,14 @@ public class Teacher {
         this.subject = subject;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public List<Student> getStudents() {
         return Collections.unmodifiableList(students);
     }
@@ -81,6 +90,7 @@ public class Teacher {
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", subject='" + subject + '\'' +
+                ", uuid='" + uuid + '\'' +
                 ", students=" + students +
                 '}';
     }

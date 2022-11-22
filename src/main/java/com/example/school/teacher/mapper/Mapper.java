@@ -25,6 +25,7 @@ public class Mapper {
         teacher.setAge(teacherDTO.getAge());
         teacher.setEmail(teacherDTO.getEmail());
         teacher.setSubject(teacherDTO.getSubject());
+        teacher.setUuid(teacherDTO.getUuid());
         for (Student student: teacherDTO.getStudentDTOS().stream().map(this::studentDtoToStudent).toList()) {
             teacher.assignStudents(student);
         }
@@ -47,6 +48,7 @@ public class Mapper {
         student.setAge(studentDTO.getAge());
         student.setEmail(studentDTO.getEmail());
         student.setFieldOfStudy(studentDTO.getFieldOfStudy());
+        student.setUuid(studentDTO.getUuid());
         studentDTO.getTeacherDTOS().stream().map(this::teacherDtoToTeacher).forEach(student::assignTeacher);
         return student;
     }

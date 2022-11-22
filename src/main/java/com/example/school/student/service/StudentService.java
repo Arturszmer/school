@@ -1,5 +1,6 @@
 package com.example.school.student.service;
 
+import com.example.school.student.dao.model.Student;
 import com.example.school.student.dao.model.StudentDTO;
 import com.example.school.student.repo.StudentRepo;
 import com.example.school.teacher.mapper.Mapper;
@@ -20,13 +21,30 @@ public class StudentService {
     }
 
     public void addStudent(StudentDTO studentDTO){
-        addStudentValidator(studentDTO);
+        studentValidator(studentDTO);
+        studentRepo.save(mapper.studentDtoToStudent(studentDTO));
     }
 
-    private void addStudentValidator(StudentDTO studentDTO) {
+    public void deleteStudent(StudentDTO studentDTO){
+        Student studentToDelete = studentRepo.findByUuid(studentDTO.getUuid()).orElseThrow();
+        studentRepo.delete(studentToDelete);
+    }
+
+    public void updateStudent(String changedStudentUUID, StudentDTO studentDTO){
+        studentValidator(studentDTO);
+        Student studentToUpdate = studentRepo.findByUuid(changedStudentUUID).orElseThrow();
+        studentToUpdate.setName(studentDTO.getName());
+        studentToUpdate.setLastName(studentDTO.getLastName());
+        studentToUpdate.setAge(studentDTO.getAge());
+        studentToUpdate.setEmail(studentDTO.getEmail());
+        studentToUpdate.setFieldOfStudy(studentDTO.getFieldOfStudy());
+        studentDTO.getTeacherDTOS().forEach(teacher -> studentToUpdate.assignTeacher(mapper.teacherDtoToTeacher(teacher)));
+        studentRepo.save(studentToUpdate);
+    }
+
+    private void studentValidator(StudentDTO studentDTO) {
         validator.nameLengthValid(studentDTO.getName());
         validator.ageValid(studentDTO.getAge());
         validator.emailValid(studentDTO.getEmail());
-        studentRepo.save(mapper.studentDtoToStudent(studentDTO));
     }
 }

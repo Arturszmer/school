@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,7 +74,7 @@ class StudentServiceTest {
                 "Brzęczyszczykiewicz",
                 22, "teacher@gmail",
                 "Przedsiębiorczość i Finanse",
-                new ArrayList<>());
+                 new ArrayList<>());
 
         // expect
         assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
@@ -86,7 +87,7 @@ class StudentServiceTest {
                 "Brzęczyszczykiewicz",
                 22, "teachergmail.pl",
                 "Przedsiębiorczość i Finanse",
-                new ArrayList<>());
+                 new ArrayList<>());
 
         // expect
         assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
@@ -105,6 +106,53 @@ class StudentServiceTest {
         assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
     }
 
+    @Test
+    public void shouldDeleteStudent(){
+        // given
+        StudentDTO studentDTO = studentDTO();
+        studentService.addStudent(studentDTO);
+
+        // when
+        studentService.deleteStudent(studentDTO);
+        List<Student> allStudents = studentRepo.findAll();
+
+        // then
+        assertTrue(allStudents.isEmpty());
+
+    }
+
+    @Test
+    public void shouldUpdateStudentData(){
+        // given
+        StudentDTO studentDTO = studentDTO();
+        studentService.addStudent(studentDTO);
+
+        // when
+        studentService.updateStudent(studentDTO.getUuid(), new StudentDTO("Andrzej",
+                "Kowalski",
+                33, "username@domain.com",
+                "Przedsiębiorczość i Finanse",
+                new ArrayList<>()));
+        Optional<Student> updatedStudent = studentRepo.findByUuid(studentDTO.getUuid());
+
+        // then
+        assertThat(updatedStudent.get().getName()).isEqualTo("Andrzej");
+    }
+
+    @Test
+    public void shoudThrowMailValidExceptionInEditStudentData(){
+        // given
+        StudentDTO studentDTO = studentDTO();
+        studentService.addStudent(studentDTO);
+
+        // expect
+        assertThrows(EmailValidException.class, () -> studentService.updateStudent(studentDTO.getUuid(), new StudentDTO("Andrzej",
+                "Kowalski",
+                33, "username@com",
+                "Przedsiębiorczość i Finanse",
+                new ArrayList<>())));
+    }
+
     @NotNull
     private static StudentDTO studentDTO() {
         return new StudentDTO("Mariusz",
@@ -113,5 +161,4 @@ class StudentServiceTest {
                 "Przedsiębiorczość i Finanse",
                 new ArrayList<>());
     }
-
 }
