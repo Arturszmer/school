@@ -34,4 +34,10 @@ public class TeacherController {
     public List<TeacherDTO> getAllTeachersSortedByLastName() {
         return teacherService.allTeachersSortedByLastName();
     }
+
+    @GetMapping("/{name}/{lastName}")
+    @ResponseBody
+    public TeacherDTO getTeacherByNameAndLastName(@PathVariable String name, @PathVariable String lastName){
+        return teacherService.techerByNameAndLastName(name, lastName);
+    }
 }
