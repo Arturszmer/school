@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
+@Table(name = "Student")
 public class Student {
 
     @Id
@@ -19,7 +20,7 @@ public class Student {
     private String email;
     private String fieldOfStudy;
     private String uuid;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Teacher> teachers = new ArrayList<>();
 
     public Student() {
@@ -80,6 +81,9 @@ public class Student {
     public void assignTeacher(Teacher teacher) {
         this.teachers.add(teacher);
     }
+    public void removeTeacher(Teacher teacher){
+        this.teachers.remove(teacher);
+    }
 
     @Override
     public String toString() {
@@ -90,6 +94,7 @@ public class Student {
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", fieldOfStudy='" + fieldOfStudy + '\'' +
+                ", uuid='" + uuid + '\'' +
                 ", teachers=" + teachers +
                 '}';
     }

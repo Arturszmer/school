@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
+@Table(name = "Teacher")
 public class Teacher {
 
     @Id
@@ -19,7 +20,7 @@ public class Teacher {
     private String email;
     private String subject;
     private String uuid;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Student> students = new ArrayList<>();
 
     public Teacher() {
@@ -77,8 +78,11 @@ public class Teacher {
         return Collections.unmodifiableList(students);
     }
 
-    public void assignStudents(Student student){
+    public void assignStudent(Student student){
         this.students.add(student);
+    }
+    public void removeStudent(Student student){
+        this.students.remove(student);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class Mapper {
         teacher.setSubject(teacherDTO.getSubject());
         teacher.setUuid(teacherDTO.getUuid());
         for (Student student: teacherDTO.getStudentDTOS().stream().map(this::studentDtoToStudent).toList()) {
-            teacher.assignStudents(student);
+            teacher.assignStudent(student);
         }
         return teacher;
     }
