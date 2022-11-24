@@ -3,6 +3,10 @@ package com.example.school.teacher.service;
 import com.example.school.myExceptions.AgeValidException;
 import com.example.school.myExceptions.EmailValidException;
 import com.example.school.myExceptions.NameValidException;
+import com.example.school.student.dao.model.Student;
+import com.example.school.student.dao.model.StudentDTO;
+import com.example.school.student.repo.StudentRepo;
+import com.example.school.student.service.StudentService;
 import com.example.school.teacher.dao.model.Teacher;
 import com.example.school.teacher.dao.model.TeacherDTO;
 import com.example.school.teacher.repo.TeacherRepo;
@@ -27,6 +31,10 @@ class TeacherServiceTest {
     TeacherRepo teacherRepo;
     @Autowired
     TeacherService teacherService;
+    @Autowired
+    StudentRepo studentRepo;
+    @Autowired
+    StudentService studentService;
 
     @Test
     public void shouldCreateATeacher(){
@@ -153,13 +161,77 @@ class TeacherServiceTest {
                 new ArrayList<>())));
     }
 
+    @Test
+    public void shouldAssignExistingStudentToTeacher() {
+        // given
+        TeacherDTO teacherDTO = getTeacherDTO();
+        teacherService.addTeacher(teacherDTO);
+        StudentDTO studentDTO = new StudentDTO("Adam", "Markiewicz",
+                20, "adamman@domain.com", "Ekonomia", new ArrayList<>());
+        studentService.addStudent(studentDTO);
+
+        // when
+        teacherService.assignExistingStudent(teacherDTO.getUuid(), studentDTO.getUuid());
+        Teacher teacherWithStudent = teacherRepo.findByUuid(teacherDTO.getUuid()).orElseThrow();
+
+        // then
+        assertThat(teacherWithStudent.getStudents().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldAssignNewStudentToTeacher(){
+        // given
+        TeacherDTO teacherDTO = getTeacherDTO();
+        teacherService.addTeacher(teacherDTO);
+
+        // when
+        teacherService.assignNewStudent(teacherDTO.getUuid(), new StudentDTO("Mariusz",
+                "Brzęczyszczykiewicz",
+                19, "username@domain.com",
+                "Przedsiębiorczość i Finanse",
+                new ArrayList<>()));
+
+        System.out.println("Techer:" + teacherRepo.findByUuid(teacherDTO.getUuid()));
+
+        // then
+        assertThat(teacherRepo.findByUuid(teacherDTO.getUuid()).get().getStudents().size()).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldRemoveStudentFromTeacher(){
+        // given
+        TeacherDTO teacherDTO = getTeacherDTOWithStudents();
+        Teacher teacher = teacherRepo.findByUuid(teacherDTO.getUuid()).orElseThrow();
+        Student studentToRemove = teacher.getStudents().stream().findFirst().orElseThrow();
+
+        // when
+        teacherService.removeStudent(teacher.getUuid(), studentToRemove.getUuid());
+
+        // then
+        assertThat(teacher.getStudents().size()).isEqualTo(0);
+    }
 
     @NotNull
-    private static TeacherDTO getTeacherDTO() {
+    private TeacherDTO getTeacherDTO() {
         return new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 22, "username@domain.com",
                 "polski",
                 new ArrayList<>());
+    }
+    @NotNull
+    private TeacherDTO getTeacherDTOWithStudents() {
+        TeacherDTO teacherDTO = new TeacherDTO("Artur",
+                "Brzęczyszczykiewicz",
+                22, "username@domain.com",
+                "polski",
+                new ArrayList<>());
+        teacherService.addTeacher(teacherDTO);
+        teacherService.assignNewStudent(teacherDTO.getUuid(), new StudentDTO("Mariusz",
+                "Brzęczyszczykiewicz",
+                19, "username@domain.com",
+                "Przedsiębiorczość i Finanse",
+                new ArrayList<>()));
+        return teacherDTO;
     }
 }
