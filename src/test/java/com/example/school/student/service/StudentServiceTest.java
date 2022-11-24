@@ -202,6 +202,19 @@ class StudentServiceTest {
         assertThat(student.getTeachers().size()).isEqualTo(0);
     }
 
+    @Test
+    public void shouldFindStudentByNameAndLastName() {
+        // given
+        StudentDTO studentDTO = studentDTO();
+        studentService.addStudent(studentDTO);
+
+        // when
+        StudentDTO studentMariusz = studentService.studentByNameAndLastName("Mariusz", "Brzęczyszczykiewicz");
+
+        // then
+        assertThat(studentMariusz.getLastName()).isEqualTo("Brzęczyszczykiewicz");
+    }
+
     @NotNull
     private StudentDTO studentDTO() {
         return new StudentDTO("Mariusz",

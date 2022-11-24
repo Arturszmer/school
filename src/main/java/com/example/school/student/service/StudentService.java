@@ -80,18 +80,6 @@ public class StudentService {
                 .findFirst().orElseThrow());
     }
 
-    private void studentValidator(StudentDTO studentDTO) {
-        validator.nameLengthValid(studentDTO.getName());
-        validator.ageValid(studentDTO.getAge());
-        validator.emailValid(studentDTO.getEmail());
-    }
-
-    private void teacherValidator(TeacherDTO teacherDTO) {
-        validator.nameLengthValid(teacherDTO.getName());
-        validator.ageValid(teacherDTO.getAge());
-        validator.emailValid(teacherDTO.getEmail());
-    }
-
     public List<TeacherDTO> allTeachersFromStudent(String studentLastName) {
         Student student = studentRepo.findByLastName(studentLastName).orElseThrow();
         return student.getTeachers().stream()
@@ -104,5 +92,20 @@ public class StudentService {
         return students.stream()
                 .map(mapper::studentToDTO)
                 .toList();
+    }
+
+    public StudentDTO studentByNameAndLastName(String name, String lastName){
+        return mapper.studentToDTO(studentRepo.findByNameAndLastName(name, lastName).orElseThrow());
+    }
+    private void studentValidator(StudentDTO studentDTO) {
+        validator.nameLengthValid(studentDTO.getName());
+        validator.ageValid(studentDTO.getAge());
+        validator.emailValid(studentDTO.getEmail());
+    }
+
+    private void teacherValidator(TeacherDTO teacherDTO) {
+        validator.nameLengthValid(teacherDTO.getName());
+        validator.ageValid(teacherDTO.getAge());
+        validator.emailValid(teacherDTO.getEmail());
     }
 }

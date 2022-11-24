@@ -85,21 +85,25 @@ public class TeacherService {
                 .filter(f -> f.getUuid().equals(studentUUID))
                 .findFirst().orElseThrow());
     }
+    public List<TeacherDTO> allTeachersSortedByLastName() {
+        List<Teacher> sortedTeacher = teacherRepo.findAll(Sort.by(Sort.Direction.ASC, "lastName"));
+        return sortedTeacher.stream().map(mapper::teacherToDTO).toList();
+    }
+
+    public TeacherDTO techerByNameAndLastName(String name, String lastName){
+        return mapper.teacherToDTO(teacherRepo.findByNameAndLastName(name, lastName).orElseThrow());
+    }
     private void teacherValidator(@NotNull TeacherDTO teacherDTO) {
 
         validator.nameLengthValid(teacherDTO.getName());
         validator.ageValid(teacherDTO.getAge());
         validator.emailValid(teacherDTO.getEmail());
     }
+
     private void studentValidator(@NotNull StudentDTO studentDTO) {
 
         validator.nameLengthValid(studentDTO.getName());
         validator.ageValid(studentDTO.getAge());
         validator.emailValid(studentDTO.getEmail());
-    }
-
-    public List<TeacherDTO> allTeachersSortedByLastName() {
-        List<Teacher> sortedTeacher = teacherRepo.findAll(Sort.by(Sort.Direction.ASC, "lastName"));
-        return sortedTeacher.stream().map(mapper::teacherToDTO).toList();
     }
 }

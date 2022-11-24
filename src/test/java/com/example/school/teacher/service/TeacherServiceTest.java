@@ -212,6 +212,19 @@ class TeacherServiceTest {
         assertThat(teacher.getStudents().size()).isEqualTo(0);
     }
 
+    @Test
+    public void shouldFindTeacherByNameAndLastName() {
+        // given
+        TeacherDTO teacherDTO = getTeacherDTO();
+        teacherService.addTeacher(teacherDTO);
+
+        // when
+        TeacherDTO teacherArtur = teacherService.techerByNameAndLastName("Artur", "Brzęczyszczykiewicz");
+
+        // then
+        assertThat(teacherArtur.getName()).isEqualTo("Artur");
+    }
+
     @NotNull
     private TeacherDTO getTeacherDTO() {
         return new TeacherDTO("Artur",
