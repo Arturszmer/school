@@ -14,8 +14,8 @@ public class Mapper {
                 teacher.getLastName(),
                 teacher.getAge(),
                 teacher.getEmail(),
-                teacher.getSubject(),
-                teacher.getStudents().stream().map(this::studentToDTO).toList());
+                teacher.getSubject());
+//                teacher.getStudents().stream().map(this::studentToDTO).collect(Collectors.toSet()));
     }
 
     public Teacher teacherDtoToTeacher(TeacherDTO teacherDTO){
@@ -26,9 +26,9 @@ public class Mapper {
         teacher.setEmail(teacherDTO.getEmail());
         teacher.setSubject(teacherDTO.getSubject());
         teacher.setUuid(teacherDTO.getUuid());
-        for (Student student: teacherDTO.getStudentDTOS().stream().map(this::studentDtoToStudent).toList()) {
-            teacher.assignStudent(student);
-        }
+//        for (Student student: teacherDTO.getStudentDTOS().stream().map(this::studentDtoToStudent).collect(Collectors.toSet())) {
+//            teacher.assignStudent(student);
+//        }
         return teacher;
     }
 
@@ -37,8 +37,8 @@ public class Mapper {
                 student.getLastName(),
                 student.getAge(),
                 student.getEmail(),
-                student.getFieldOfStudy(),
-                student.getTeachers().stream().map(this::teacherToDTO).toList());
+                student.getFieldOfStudy());
+//                student.getTeachers().stream().map(this::teacherToDTO).collect(Collectors.toSet()));
     }
 
     public Student studentDtoToStudent (StudentDTO studentDTO){
@@ -49,7 +49,7 @@ public class Mapper {
         student.setEmail(studentDTO.getEmail());
         student.setFieldOfStudy(studentDTO.getFieldOfStudy());
         student.setUuid(studentDTO.getUuid());
-        studentDTO.getTeacherDTOS().stream().map(this::teacherDtoToTeacher).forEach(student::assignTeacher);
+//        studentDTO.getTeacherDTOS().stream().map(this::teacherDtoToTeacher).forEach(student::assignTeacher);
         return student;
     }
 }

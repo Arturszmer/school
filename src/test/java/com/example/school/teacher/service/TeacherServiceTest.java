@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,13 +49,22 @@ class TeacherServiceTest {
     }
 
     @Test
+    public void shouldShowAllTeachers(){
+        // given
+        TeacherDTO teacherDTO = getTeacherDTO();
+        teacherService.addTeacher(teacherDTO);
+
+        // then
+        assertThat(teacherService.allTeachers().size()).isEqualTo(1);
+    }
+
+    @Test
     public void shouldThrowANameLengthException() {
         // given
         TeacherDTO teacherDTO = new TeacherDTO("A",
                 "Brzęczyszczykiewicz",
                 22, "teacher@gmail.com",
-                "polski",
-                new ArrayList<>());
+                "polski");
 
         // expect
         assertThrows(NameValidException.class, () -> teacherService.addTeacher(teacherDTO));
@@ -68,8 +76,7 @@ class TeacherServiceTest {
         TeacherDTO teacherDTO = new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 17, "teacher@gmail.com",
-                "polski",
-                new ArrayList<>());
+                "polski");
 
         // expect
         assertThrows(AgeValidException.class, () -> teacherService.addTeacher(teacherDTO));
@@ -81,8 +88,7 @@ class TeacherServiceTest {
         TeacherDTO teacherDTO = new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 22, "teacher@gmail",
-                "polski",
-                new ArrayList<>());
+                "polski");
 
         // expect
         assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
@@ -94,8 +100,7 @@ class TeacherServiceTest {
         TeacherDTO teacherDTO = new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 22, "teachergmail.pl",
-                "polski",
-                new ArrayList<>());
+                "polski");
 
         // expect
         assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
@@ -107,8 +112,7 @@ class TeacherServiceTest {
         TeacherDTO teacherDTO = new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 22, "@gmail.pl",
-                "polski",
-                new ArrayList<>());
+                "polski");
 
         // expect
         assertThrows(EmailValidException.class, () -> teacherService.addTeacher(teacherDTO));
@@ -139,8 +143,7 @@ class TeacherServiceTest {
                 "Nowak",
                 28,
                 "autograf@doom.com",
-                "Angelsi",
-                new ArrayList<>()));
+                "Angelsi"));
         Optional<Teacher> updatedTeacher = teacherRepo.findByUuid(teacherDTO.getUuid());
         // then
         assertThat(updatedTeacher.get().getName()).isEqualTo("Mariusz");
@@ -157,8 +160,7 @@ class TeacherServiceTest {
                 "Nowak",
                 17,
                 "autograf@doom.com",
-                "Angelsi",
-                new ArrayList<>())));
+                "Angelsi")));
     }
 
     @Test
@@ -167,7 +169,7 @@ class TeacherServiceTest {
         TeacherDTO teacherDTO = getTeacherDTO();
         teacherService.addTeacher(teacherDTO);
         StudentDTO studentDTO = new StudentDTO("Adam", "Markiewicz",
-                20, "adamman@domain.com", "Ekonomia", new ArrayList<>());
+                20, "adamman@domain.com", "Ekonomia");
         studentService.addStudent(studentDTO);
 
         // when
@@ -188,8 +190,7 @@ class TeacherServiceTest {
         teacherService.assignNewStudent(teacherDTO.getUuid(), new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 19, "username@domain.com",
-                "Przedsiębiorczość i Finanse",
-                new ArrayList<>()));
+                "Przedsiębiorczość i Finanse"));
 
         System.out.println("Techer:" + teacherRepo.findByUuid(teacherDTO.getUuid()));
 
@@ -216,22 +217,19 @@ class TeacherServiceTest {
         return new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 22, "username@domain.com",
-                "polski",
-                new ArrayList<>());
+                "polski");
     }
     @NotNull
     private TeacherDTO getTeacherDTOWithStudents() {
         TeacherDTO teacherDTO = new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 22, "username@domain.com",
-                "polski",
-                new ArrayList<>());
+                "polski");
         teacherService.addTeacher(teacherDTO);
         teacherService.assignNewStudent(teacherDTO.getUuid(), new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 19, "username@domain.com",
-                "Przedsiębiorczość i Finanse",
-                new ArrayList<>()));
+                "Przedsiębiorczość i Finanse"));
         return teacherDTO;
     }
 }

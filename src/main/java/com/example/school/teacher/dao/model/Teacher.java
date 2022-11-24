@@ -3,12 +3,9 @@ package com.example.school.teacher.dao.model;
 import com.example.school.student.dao.model.Student;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Entity
-@Table(name = "Teacher")
 public class Teacher {
 
     @Id
@@ -20,8 +17,8 @@ public class Teacher {
     private String email;
     private String subject;
     private String uuid;
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private List<Student> students = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Set<Student> students = new HashSet<>();
 
     public Teacher() {
     }
@@ -74,8 +71,8 @@ public class Teacher {
         this.uuid = uuid;
     }
 
-    public List<Student> getStudents() {
-        return Collections.unmodifiableList(students);
+    public Set<Student> getStudents() {
+        return Collections.unmodifiableSet(students);
     }
 
     public void assignStudent(Student student){

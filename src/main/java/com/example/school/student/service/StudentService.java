@@ -7,8 +7,11 @@ import com.example.school.teacher.dao.model.TeacherDTO;
 import com.example.school.teacher.mapper.Mapper;
 import com.example.school.teacher.repo.TeacherRepo;
 import com.example.school.validators.TeacherAndStudentValidator;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class StudentService {
@@ -23,6 +26,13 @@ public class StudentService {
         this.mapper = mapper;
         this.validator = validator;
         this.teacherRepo = teacherRepo;
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentDTO> allStudents() {
+        return studentRepo.findAll().stream()
+                .map(mapper::studentToDTO)
+                .toList();
     }
 
     @Transactional
@@ -46,7 +56,6 @@ public class StudentService {
         studentToUpdate.setAge(studentDTO.getAge());
         studentToUpdate.setEmail(studentDTO.getEmail());
         studentToUpdate.setFieldOfStudy(studentDTO.getFieldOfStudy());
-        studentDTO.getTeacherDTOS().forEach(teacher -> studentToUpdate.assignTeacher(mapper.teacherDtoToTeacher(teacher)));
         studentRepo.save(studentToUpdate);
     }
 
@@ -71,15 +80,29 @@ public class StudentService {
                 .findFirst().orElseThrow());
     }
 
-
     private void studentValidator(StudentDTO studentDTO) {
         validator.nameLengthValid(studentDTO.getName());
         validator.ageValid(studentDTO.getAge());
         validator.emailValid(studentDTO.getEmail());
     }
+
     private void teacherValidator(TeacherDTO teacherDTO) {
         validator.nameLengthValid(teacherDTO.getName());
         validator.ageValid(teacherDTO.getAge());
         validator.emailValid(teacherDTO.getEmail());
+    }
+
+    public List<TeacherDTO> allTeachersFromStudent(String studentLastName) {
+        Student student = studentRepo.findByLastName(studentLastName).orElseThrow();
+        return student.getTeachers().stream()
+                .map(mapper::teacherToDTO)
+                .toList();
+    }
+
+    public List<StudentDTO> allStudentsSortedByLastName() {
+        List<Student> students = studentRepo.findAll(Sort.by(Sort.Direction.ASC, "lastName"));
+        return students.stream()
+                .map(mapper::studentToDTO)
+                .toList();
     }
 }
