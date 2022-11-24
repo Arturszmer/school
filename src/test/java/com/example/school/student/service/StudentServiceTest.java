@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,8 +54,7 @@ class StudentServiceTest {
         StudentDTO studentDTO = new StudentDTO("A",
                 "Brzęczyszczykiewicz",
                 22, "teacher@gmail.com",
-                "polski",
-                new ArrayList<>());
+                "polski");
 
         // expect
         assertThrows(NameValidException.class, () -> studentService.addStudent(studentDTO));
@@ -68,8 +66,7 @@ class StudentServiceTest {
         StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 17, "teacher@gmail.com",
-                "polski",
-                new ArrayList<>());
+                "polski");
 
         // expect
         assertThrows(AgeValidException.class, () -> studentService.addStudent(studentDTO));
@@ -81,8 +78,7 @@ class StudentServiceTest {
         StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 22, "teacher@gmail",
-                "Przedsiębiorczość i Finanse",
-                 new ArrayList<>());
+                "Przedsiębiorczość i Finanse");
 
         // expect
         assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
@@ -94,8 +90,7 @@ class StudentServiceTest {
         StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 22, "teachergmail.pl",
-                "Przedsiębiorczość i Finanse",
-                 new ArrayList<>());
+                "Przedsiębiorczość i Finanse");
 
         // expect
         assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
@@ -107,8 +102,7 @@ class StudentServiceTest {
         StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 22, "@gmail.pl",
-                "Przedsiębiorczość i Finanse",
-                new ArrayList<>());
+                "Przedsiębiorczość i Finanse");
 
         // expect
         assertThrows(EmailValidException.class, () -> studentService.addStudent(studentDTO));
@@ -139,8 +133,7 @@ class StudentServiceTest {
         studentService.updateStudent(studentDTO.getUuid(), new StudentDTO("Andrzej",
                 "Kowalski",
                 33, "username@domain.com",
-                "Przedsiębiorczość i Finanse",
-                new ArrayList<>()));
+                "Przedsiębiorczość i Finanse"));
         Optional<Student> updatedStudent = studentRepo.findByUuid(studentDTO.getUuid());
 
         // then
@@ -157,8 +150,7 @@ class StudentServiceTest {
         assertThrows(EmailValidException.class, () -> studentService.updateStudent(studentDTO.getUuid(), new StudentDTO("Andrzej",
                 "Kowalski",
                 33, "username@com",
-                "Przedsiębiorczość i Finanse",
-                new ArrayList<>())));
+                "Przedsiębiorczość i Finanse")));
     }
 
     @Test
@@ -169,8 +161,7 @@ class StudentServiceTest {
         TeacherDTO teacherDTO = new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 22, "username@domain.com",
-                "polski",
-                new ArrayList<>());
+                "polski");
         teacherService.addTeacher(teacherDTO);
 
         // when
@@ -191,8 +182,7 @@ class StudentServiceTest {
         studentService.assignNewTeacher(studentDTO.getUuid(), new TeacherDTO("Artur",
                 "Brzęczyszczykiewicz",
                 22, "username@domain.com",
-                "polski",
-                new ArrayList<>()));
+                "polski"));
 
         // then
         assertThat(studentRepo.findByUuid(studentDTO.getUuid()).orElseThrow().getTeachers().size()).isEqualTo(1);
@@ -217,8 +207,7 @@ class StudentServiceTest {
         return new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 19, "username@domain.com",
-                "Przedsiębiorczość i Finanse",
-                new ArrayList<>());
+                "Przedsiębiorczość i Finanse");
     }
 
     @NotNull
@@ -226,14 +215,12 @@ class StudentServiceTest {
         StudentDTO studentDTO = new StudentDTO("Mariusz",
                 "Brzęczyszczykiewicz",
                 19, "username@domain.com",
-                "Przedsiębiorczość i Finanse",
-                new ArrayList<>());
+                "Przedsiębiorczość i Finanse");
         studentService.addStudent(studentDTO);
         studentService.assignNewTeacher(studentDTO.getUuid(), new TeacherDTO("Dariusz",
                 "Miłosz",
                 42, "username@domain.com",
-                "Ekonomia",
-                new ArrayList<>()));
+                "Ekonomia"));
         return studentDTO;
     }
 }

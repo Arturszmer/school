@@ -2,15 +2,17 @@ package com.example.school.teacher.service;
 
 import com.example.school.student.dao.model.StudentDTO;
 import com.example.school.student.repo.StudentRepo;
-import com.example.school.student.service.StudentService;
 import com.example.school.teacher.dao.model.Teacher;
 import com.example.school.teacher.dao.model.TeacherDTO;
 import com.example.school.teacher.mapper.Mapper;
 import com.example.school.teacher.repo.TeacherRepo;
 import com.example.school.validators.TeacherAndStudentValidator;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class TeacherService {
@@ -20,11 +22,24 @@ public class TeacherService {
     private final TeacherAndStudentValidator validator;
     private final StudentRepo studentRepo;
 
-    public TeacherService(TeacherRepo teacherRepo, Mapper mapper, TeacherAndStudentValidator validator, StudentRepo studentRepo, StudentService studentService) {
+    public TeacherService(TeacherRepo teacherRepo, Mapper mapper, TeacherAndStudentValidator validator, StudentRepo studentRepo) {
         this.teacherRepo = teacherRepo;
         this.mapper = mapper;
         this.validator = validator;
         this.studentRepo = studentRepo;
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeacherDTO> allTeachers(){
+        return teacherRepo.findAll().stream()
+                .map(mapper::teacherToDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<StudentDTO> allStudentsFromTeacher(String teacherLastName) {
+        Teacher teacher = teacherRepo.findByLastName(teacherLastName).orElseThrow();
+        return teacher.getStudents().stream().map(mapper::studentToDTO).toList();
     }
 
     @Transactional
@@ -47,7 +62,6 @@ public class TeacherService {
         teacherToUpdate.setLastName(editedTeacherDto.getLastName());
         teacherToUpdate.setAge(teacherToUpdate.getAge());
         teacherToUpdate.setEmail(editedTeacherDto.getEmail());
-        editedTeacherDto.getStudentDTOS().forEach(studentDTO -> teacherToUpdate.assignStudent(mapper.studentDtoToStudent(studentDTO)));
         teacherRepo.save(teacherToUpdate);
     }
 
@@ -71,7 +85,6 @@ public class TeacherService {
                 .filter(f -> f.getUuid().equals(studentUUID))
                 .findFirst().orElseThrow());
     }
-
     private void teacherValidator(@NotNull TeacherDTO teacherDTO) {
 
         validator.nameLengthValid(teacherDTO.getName());
@@ -83,5 +96,10 @@ public class TeacherService {
         validator.nameLengthValid(studentDTO.getName());
         validator.ageValid(studentDTO.getAge());
         validator.emailValid(studentDTO.getEmail());
+    }
+
+    public List<TeacherDTO> allTeachersSortedByLastName() {
+        List<Teacher> sortedTeacher = teacherRepo.findAll(Sort.by(Sort.Direction.ASC, "lastName"));
+        return sortedTeacher.stream().map(mapper::teacherToDTO).toList();
     }
 }

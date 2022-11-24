@@ -1,8 +1,5 @@
 package com.example.school.student.dao.model;
 
-import com.example.school.teacher.dao.model.TeacherDTO;
-
-import java.util.List;
 import java.util.UUID;
 
 public class StudentDTO {
@@ -13,16 +10,14 @@ public class StudentDTO {
     private final String email;
     private final String fieldOfStudy;
     private final String uuid;
-    private final List<TeacherDTO> teacherDTOS;
 
-    public StudentDTO(String name, String lastName, int age, String email, String fieldOfStudy, List<TeacherDTO> teacherDTOS) {
+    public StudentDTO(String name, String lastName, int age, String email, String fieldOfStudy) {
         this.name = name;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
         this.fieldOfStudy = fieldOfStudy;
         this.uuid = UUID.randomUUID().toString();
-        this.teacherDTOS = teacherDTOS;
     }
 
     public String getName() {
@@ -49,7 +44,15 @@ public class StudentDTO {
         return uuid;
     }
 
-    public List<TeacherDTO> getTeacherDTOS() {
-        return teacherDTOS;
+    @Override
+    public String toString() {
+        return "StudentDTO{" +
+                "name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", fieldOfStudy='" + fieldOfStudy + '\'' +
+                ", uuid='" + uuid + '\'' +
+                '}';
     }
 }
